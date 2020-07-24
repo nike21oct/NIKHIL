@@ -18,8 +18,9 @@ phases:
         - #sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' hello-k8s.yml
         - #$(aws ecr get-login --no-include-email)
         - #export KUBECONFIG=$HOME/.kube/config
-        - "mkdir ~/.kube/"
-        - "cp config-$ENV ~/.kube/config"
+        - mkdir -p $HOME/.kube
+        - cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+        - chown $(id -u):$(id -g) $HOME/.kube/config
   build:
     commands:
       - #docker build --tag $REPOSITORY_URI:$TAG .
@@ -39,8 +40,8 @@ phases:
       - #kubectl apply -f hello-k8s.yml
       - helm search repo my-nginx
       - helm search repo tomcat
-      - helm upgrade --install nikhil my-helm-chart/my-nginx --version 0.1.0 --namespace helm-space
-      - helm upgrade --install tomcat my-helm-chart/tomcat --version 0.4.1 --namespace helm-space
+      - helm upgrade --install nikhil1 my-helm-chart/my-nginx --version 0.1.0 --namespace helm-space
+      - helm upgrade --install tomcat1 my-helm-chart/tomcat --version 0.4.1 --namespace helm-space
       - #printf '[{"name":"hello-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files: build.json
