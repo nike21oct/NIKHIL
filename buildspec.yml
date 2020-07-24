@@ -14,17 +14,17 @@ phases:
       - helm plugin install https://github.com/hypnoglow/helm-s3.git
   pre_build:
       commands:
-        - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
-        - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' hello-k8s.yml
-        - $(aws ecr get-login --no-include-email)
+        - #TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+        - #sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' hello-k8s.yml
+        - #$(aws ecr get-login --no-include-email)
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - docker build --tag $REPOSITORY_URI:$TAG .
+      - #docker build --tag $REPOSITORY_URI:$TAG .
 
   post_build:
     commands:
-      - docker push $REPOSITORY_URI:$TAG
+      - #docker push $REPOSITORY_URI:$TAG
       - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
@@ -34,11 +34,11 @@ phases:
       - helm repo add my-helm-chart s3://my-helm-chart/charts
       - helm repo list
       - helm repo update
-      - kubectl apply -f hello-k8s.yml
+      - #kubectl apply -f hello-k8s.yml
       - helm search repo my-nginx
       - helm search repo tomcat
       - helm upgrade --install nikhil my-helm-chart/my-nginx --version 0.1.0 --namespace helm-space
       - helm upgrade --install tomcat my-helm-chart/tomcat --version 0.4.1 --namespace helm-space
-      - printf '[{"name":"hello-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
+      - #printf '[{"name":"hello-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files: build.json
