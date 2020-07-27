@@ -34,4 +34,4 @@ phases:
   build:
     commands:
       - helm upgrade --install nikhi001 my-helm-chart/my-nginx --version 0.1.0 --namespace helm-space
-      - helm upgrade --install tomcat10 my-helm-chart/tomcat --version 0.4.1 --namespace helm-space
+      - helm upgrade --install tomcat34 my-helm-chart/tomcat --version 0.4.1 --namespace helm-space
